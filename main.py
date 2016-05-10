@@ -8,6 +8,7 @@ from PIL import Image
 from PIL import ImageDraw
 from imutils import paths
 
+width = 5
 images = ['jpeg', 'png']
 chars = set('GHIJKLMNOPQRSTUVWXYZ')
 
@@ -49,16 +50,32 @@ def main():
 	check_color(color)
 	color = hex_to_rgb(color)
 
+	uw = raw_input("Provide Border Width (max 200px): ") 
+	try:
+		assert uw.strip().isdigit() 
+		print uw
+		assert int(uw) > 0
+	except:
+		sys.exit("Invalid border value.")
+	width = int(uw)
+
 	img = Image.open(p)
 	w, h = img.size
 
 	# Create border in desired color
-	bh = w+10
-	bw = h+10
+	bh = w+width*2
+	bw = h+width*2
 	border = Image.new('RGB', (bh, bw))
 	for x in range(0, border.size[0]):
 		for y in range(0, border.size[1]):
 			border.putpixel((x,y), color)
+	border.show()	
+
+	# Paste the image on the border
+	#draw = ImageDraw.draw(border)
+	border.paste(img, (width, width))
+	#draw.save("newborder.jpg")
+	#draw.show()	
 	border.show()	
 
 if __name__ == "__main__": main()
