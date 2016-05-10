@@ -5,6 +5,7 @@ import struct
 import imghdr
 import numpy as np
 from PIL import Image
+from PIL import ImageDraw
 from imutils import paths
 
 images = ['jpeg', 'png']
@@ -46,16 +47,23 @@ def main():
 
 	color = raw_input("Provide Hex Color Code: #")
 	check_color(color)
+	color = hex_to_rgb(color)
 
 	img = Image.open(p)
-	img_size = img.size 
-	img.show()
+	w, h = img.size
+	print w 
+	print h
 
-	print hex_to_rgb(color)
-
-	bh = img_size[0]*1.01
-	bw = img_size[1]*1.01
-	border = np.zeros((bh, bw, 3), np.uint8)
-	border[:, 0:bw] = hex_to_rgb(color)
+	# Create border in desired color
+	bh = w+10
+	bw = h+10
+	border = Image.new('RGB', (bh, bw))
+	print bh 
+	print bw
+	for x in range(0, border.size[0]-1):
+		for y in range(0, border.size[1]-1):
+			print str(x) + " " + str(y)
+			border.putpixel((x,y), color)
+	border.show()	
 
 if __name__ == "__main__": main()
