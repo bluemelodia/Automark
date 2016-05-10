@@ -51,18 +51,13 @@ def main():
 
 	img = Image.open(p)
 	w, h = img.size
-	print w 
-	print h
 
 	# Create border in desired color
 	bh = w+10
 	bw = h+10
 	border = Image.new('RGB', (bh, bw))
-	print bh 
-	print bw
-	for x in range(0, border.size[0]-1):
-		for y in range(0, border.size[1]-1):
-			print str(x) + " " + str(y)
+	for x in range(0, border.size[0]):
+		for y in range(0, border.size[1]):
 			border.putpixel((x,y), color)
 	border.show()	
 
