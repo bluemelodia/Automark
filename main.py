@@ -1,8 +1,10 @@
 import cv2
 import os
 import sys
+import struct
 import imghdr
 import numpy as np
+from PIL import Image
 from imutils import paths
 
 images = ['jpeg', 'png']
@@ -30,6 +32,10 @@ def check_color(color):
 	except:
 		sys.exit("Invalid hex color code.")
 
+# Change hex to RGB
+def hex_to_rgb(color):
+	return tuple(ord(c) for c in color.decode('hex'))
+
 def main():
 	# Assumed that watermark has transparent background
 	wm = raw_input("Provide Watermark: ")
@@ -39,6 +45,17 @@ def main():
 	p = validate(p, 'photo')
 
 	color = raw_input("Provide Hex Color Code: #")
-	color = check_color(color)
+	check_color(color)
+
+	img = Image.open(p)
+	img_size = img.size 
+	img.show()
+
+	print hex_to_rgb(color)
+
+	bh = img_size[0]*1.01
+	bw = img_size[1]*1.01
+	border = np.zeros((bh, bw, 3), np.uint8)
+	border[:, 0:bw] = hex_to_rgb(color)
 
 if __name__ == "__main__": main()
