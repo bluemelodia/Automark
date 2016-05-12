@@ -46,7 +46,11 @@ def main():
 	p = raw_input("Provide Photo: ")		
 	p = validate(p, 'photo')
 	
-	#wm_size = raw_input("Width of Watermark: ")
+	wm_size = raw_input("Width of Watermark: ")
+	try:
+		assert float(wm_size) >= 0.0 and float(wm_size) <= 100.0
+	except:
+		sys.exit("Invalid watermark percentage.")
 
 	color = raw_input("Provide Hex Color Code: #")
 	check_color(color)
@@ -73,15 +77,24 @@ def main():
 
 	# Paste the image on the border
 	border.paste(img, (width, width))
-	borderpic = os.path.basename(os.path.normpath(p))
-	borderpic = borderpic.split('.', 1)[0]
-	print "Saving bordered picture as " + str(borderpic) + "-border.png."
-	border.save(borderpic + "-border.png")	
 	
 	# Save copy of image without watermark
+	borderpic = os.path.basename(os.path.normpath(p))
+	borderpic = borderpic.split('.', 1)[0]
+	picname = borderpic + "-border.png"
+	print "Saving bordered picture as " + str(borderpic) + "-border.png."
+	border.save(picname)	
 	
+	# Watermark the picture
+	wmark = Image.open(wm).convert('RGBA')
+	wmarkpic = Image.open(os.path.abspath(picname))
+	ww, wh = wmarkpic.size
 
-	#wmark = Image.open(wm)
-	#wdraw = ImageDraw.draw(wmark, "RGBA")
+	wdraw = ImageDraw.Draw(wmark)
+
+	# Place the watermark in the right corner
+	wmarkpic.paste(wmark, (5, 5))
+	print "Saving watermarked picture as " + str(borderpic) + "-wm.png."
+	wmarkpic.save(borderpic + "-wm.png")
 
 if __name__ == "__main__": main()
