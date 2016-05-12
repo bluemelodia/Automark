@@ -45,16 +45,17 @@ def main():
 
 	p = raw_input("Provide Photo: ")		
 	p = validate(p, 'photo')
+	
+	#wm_size = raw_input("Width of Watermark: ")
 
 	color = raw_input("Provide Hex Color Code: #")
 	check_color(color)
 	color = hex_to_rgb(color)
 
-	uw = raw_input("Provide Border Width (max 200px): ") 
+	uw = raw_input("Provide Border Width (max 100px): ") 
 	try:
 		assert uw.strip().isdigit() 
-		print uw
-		assert int(uw) > 0
+		assert int(uw) > 0 and int(uw) <= 100
 	except:
 		sys.exit("Invalid border value.")
 	width = int(uw)
@@ -69,13 +70,18 @@ def main():
 	for x in range(0, border.size[0]):
 		for y in range(0, border.size[1]):
 			border.putpixel((x,y), color)
-	border.show()	
 
 	# Paste the image on the border
-	#draw = ImageDraw.draw(border)
 	border.paste(img, (width, width))
-	#draw.save("newborder.jpg")
-	#draw.show()	
-	border.show()	
+	borderpic = os.path.basename(os.path.normpath(p))
+	borderpic = borderpic.split('.', 1)[0]
+	print "Saving bordered picture as " + str(borderpic) + "-border.png."
+	border.save(borderpic + "-border.png")	
+	
+	# Save copy of image without watermark
+	
+
+	#wmark = Image.open(wm)
+	#wdraw = ImageDraw.draw(wmark, "RGBA")
 
 if __name__ == "__main__": main()
