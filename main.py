@@ -84,16 +84,20 @@ def main():
 	picname = borderpic + "-border.png"
 	print "Saving bordered picture as " + str(borderpic) + "-border.png."
 	border.save(picname)	
-	
-	# Watermark the picture
+
+	# Alter watermark size, maintaining aspect ratio
 	wmark = Image.open(wm).convert('RGBA')
+	size = int(w*(float(wm_size)/100)), int(h*(float(wm_size)/100))
+	wmark.thumbnail(size, Image.ANTIALIAS)	
+	wmark.show()
+
 	wmarkpic = Image.open(os.path.abspath(picname))
 	ww, wh = wmarkpic.size
 
 	wdraw = ImageDraw.Draw(wmark)
 
 	# Place the watermark in the right corner
-	wmarkpic.paste(wmark, (5, 5))
+	wmarkpic.paste(wmark, (width, width))
 	print "Saving watermarked picture as " + str(borderpic) + "-wm.png."
 	wmarkpic.save(borderpic + "-wm.png")
 
