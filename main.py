@@ -49,7 +49,7 @@ def main():
 	p = raw_input("Provide Photo: ")		
 	p = validate(p, 'photo')
 	
-	wm_size = raw_input("Width of Watermark: ")
+	wm_size = raw_input("Width of Watermark (As % of Photo Width): ")
 	try:
 		assert float(wm_size) >= 0.0 and float(wm_size) <= 100.0
 	except:
@@ -115,16 +115,17 @@ def main():
 	sname = waterpic + "-small.png"
 	wwmark.save(sname)
 
+	# Load in the final watermark, image
 	wmarkpic = Image.open(os.path.abspath(picname))
 	wwidth, wheight = wmarkpic.size
 	wmarksm = Image.open(os.path.abspath(sname))
 	wtwidth, wtheight = wmarksm.size
 
-	wdraw = ImageDraw.Draw(wwmark)
-
 	# Place the watermark in the right corner
-	print "paste at " + str(wheight-wtheight-width) + "," + str(wwidth-wtwidth-width)
-	wmarkpic.paste(wwmark, (wwidth-wtwidth-width, wheight-wtheight-width))
+	r, g, b, a = wmarksm.split()
+	top = Image.merge("RGB", (r, g, b))
+	mask = Image.merge("L", (a,))
+	wmarkpic.paste(top, (wwidth-wtwidth-width, wheight-wtheight-width), mask)	
 	print "Saving watermarked picture as " + str(borderpic) + "-wm.png."
 	wmarkpic.save(borderpic + "-wm.png")
 
