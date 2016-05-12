@@ -92,36 +92,24 @@ def main():
 	wmarkpix = wmark.load()
 	ww, wh = wmark.size
 	wwmark = Image.new('RGBA', (ww, wh))
-	# Make all non-transparent pixels white
-	print str(wh) + " " + str(ww)
+	
+	# Make all non-transparent pixels into the color of choice
+	hexcolor = '#' + str(color).lower()
+	red, green, blue = getrgb(hexcolor)
 	for x in range(ww):
 		for y in range(wh):
-			print str(x) + " " + str(y)
 			r, g, b, a = wmarkpix[x, y]
 			if (a == 255):
-				wwmark.putpixel((x,y), (255, 255, 255, 255))
+				wwmark.putpixel((x,y), (red, green, blue))
 			else:
 				wwmark.putpixel((x,y), (255, 255, 255, 0))
 	wwmark.show()
-	wwmark.save('Hi.png')
-
-	hexcolor = '#' + str(color).lower()
-	r, g, b = getrgb(hexcolor)
-	h, l, s = colorsys.rgb_to_hls(r/255.0, g/255.0, b/255.0)	
-	res = wmark.copy()
-	wnew = res.load()
-	for y in range(wmark.size[1]):
-		for x in range(wmark.size[0]):
-			r2, g2, b2, a = wnew[x,y]
-			h2, l2, s2 = colorsys.rgb_to_hls(r2/255.0, g2/255.0, b2/255.0)
-			r3, g3, b3 = colorsys.hls_to_rgb(h, l2, s)
-			wnew[x, y] = (int(r3*255.99), int(g3*255.99), int(b3*255.99), a)	
 	waterpic = os.path.basename(os.path.normpath(wm)) 
 	waterpic = waterpic.split('.', 1)[0]
 	wname = waterpic + "-recolor.png"
 	print "Saving recolored watermark as " + str(wname)
-	res.save(wname)
-
+	wwmark.save(wname)
+	
 	# Alter watermark size, maintaining aspect ratio
 	size = int(w*(float(wm_size)/100)), int(h*(float(wm_size)/100))
 	wmark.thumbnail(size, Image.ANTIALIAS)	
