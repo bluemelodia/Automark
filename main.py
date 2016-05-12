@@ -103,7 +103,6 @@ def main():
 				wwmark.putpixel((x,y), (red, green, blue))
 			else:
 				wwmark.putpixel((x,y), (255, 255, 255, 0))
-	wwmark.show()
 	waterpic = os.path.basename(os.path.normpath(wm)) 
 	waterpic = waterpic.split('.', 1)[0]
 	wname = waterpic + "-recolor.png"
@@ -112,16 +111,20 @@ def main():
 	
 	# Alter watermark size, maintaining aspect ratio
 	size = int(w*(float(wm_size)/100)), int(h*(float(wm_size)/100))
-	wmark.thumbnail(size, Image.ANTIALIAS)	
-	wmark.show()
+	wwmark.thumbnail(size, Image.ANTIALIAS)	
+	sname = waterpic + "-small.png"
+	wwmark.save(sname)
 
 	wmarkpic = Image.open(os.path.abspath(picname))
-	ww, wh = wmarkpic.size
+	wwidth, wheight = wmarkpic.size
+	wmarksm = Image.open(os.path.abspath(sname))
+	wtwidth, wtheight = wmarksm.size
 
-	wdraw = ImageDraw.Draw(wmark)
+	wdraw = ImageDraw.Draw(wwmark)
 
 	# Place the watermark in the right corner
-	wmarkpic.paste(wmark, (width, width))
+	print "paste at " + str(wheight-wtheight-width) + "," + str(wwidth-wtwidth-width)
+	wmarkpic.paste(wwmark, (wwidth-wtwidth-width, wheight-wtheight-width))
 	print "Saving watermarked picture as " + str(borderpic) + "-wm.png."
 	wmarkpic.save(borderpic + "-wm.png")
 
